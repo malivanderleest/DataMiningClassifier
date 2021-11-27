@@ -7,10 +7,6 @@ import sklearn as sk
 from sklearn.model_selection import StratifiedKFold
 
 
-#    Class distribution:
- 
-#    Benign: 458 (65.5%) == class 2
-#    Malignant: 241 (34.5%) == class 4
 
 #-------------------------------------------------------------------------------
 # MAIN
@@ -36,11 +32,9 @@ if __name__ == "__main__":
     # Allocate 10% to a validation set and maintain ratios
     b_validation = b_data.sample(frac = 0.1)
     data = data.drop(b_validation.index)
-    print(b_data.shape) # --> 400/10 = 40
-
     m_validation = m_data.sample(frac = 0.1)
     data = data.drop(m_validation.index)
-    print(m_data.shape) # --> 215/10 = 21x5, 22x5
+    validation_data = b_validation.append(m_validation, shuffle = True)
 
     # Divide remaining data into 10-fold subsets
     kfold_class = data['J']
@@ -52,12 +46,28 @@ if __name__ == "__main__":
         X_train, X_test = data.iloc[train_index], data.iloc[test_index]
         y_train, y_test = kfold_class.iloc[train_index], kfold_class.iloc[test_index]
 
+        # k-nearest neighbors
+        k_param_accuracy = {}
 
+        # Decision tree
+        first_split_param_accuracy = {}
+        
+        # Random Forest
+        first_split_param_accuracy = {}
+
+        # SVM using the polynomial kernel
+        d_param_accuracy = {}
+        
+        # SVM using the RBF kernel
+        gamma_param_accuracy = {}
+        
+        # Deep neural network with sigmoid activation
+        z_param_accuracy = {}
+        
+        # Deep neural network with ReLU activation
+        z_param_accuracy = {}
     
-    # Separate training data into univariate lists
-    training = {
-        #'training_x1' : training_data['cement'],
-    }
+   
     ############################################################################
 
 
