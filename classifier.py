@@ -1,5 +1,6 @@
 # Libraries
 import sys
+import time
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
@@ -9,6 +10,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn import tree
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
+from sklearn.neural_network import MLPClassifier
 
 #-------------------------------------------------------------------------------
 # MAIN
@@ -55,7 +57,8 @@ if __name__ == "__main__":
     max_depth_params_accuracy = [0,0,0,0,0,0,0,0,0,0]
     
     # Random Forest
-    trees_params = [25,50,100,125,150,175,200,225,250,275]
+    #trees_params = [25,50,100,125,150,175,200,225,250,275]
+    trees_params = [1,1,1,1,1,1,1,1,1,1,1]
     trees_params_accuracy = [0,0,0,0,0,0,0,0,0,0]
 
     # SVM using the polynomial kernel
@@ -63,16 +66,16 @@ if __name__ == "__main__":
     d_params_accuracy = [0,0,0,0,0,0,0,0,0,0]
     
     # SVM using the RBF kernel
-    gamma_params = []
-    gamma_params_accuracy = []
+    gamma_params = [.0000001,.000001,.00001,.0001,.001,.01,.1,1,10,100]
+    gamma_params_accuracy = [0,0,0,0,0,0,0,0,0,0]
     
     # Deep neural network with sigmoid activation
-    z_params = []
-    z_params_accuracy = []
+    neurons_params = [5,10,15,20,25,30,35,40,45,50]
+    neurons_params_accuracy = [0,0,0,0,0,0,0,0,0,0]
     
     # Deep neural network with ReLU activation
-    relu_z_params = []
-    relu_z_params_accuracy = []
+    relu_neurons_params = [5,10,15,20,25,30,35,40,45,50]
+    relu_neurons_params_accuracy = [0,0,0,0,0,0,0,0,0,0]
 
     index = 0
     skf = StratifiedKFold(n_splits=10)
@@ -86,6 +89,9 @@ if __name__ == "__main__":
         max_depth_total = 0
         trees_total = 0
         d_total = 0
+        gamma_total = 0
+        neurons_total = 0
+        relu_neurons_total = 0
 
     ################################ TRAINING #################################
         for train_index, test_index in skf.split(training_data, kfold_class):
@@ -122,6 +128,20 @@ if __name__ == "__main__":
             # SVM polynomial kernel testing
             d_total = d_total + poly_svm.score(X_test,y_test)
 
+            # SVM RBF kernel classifier
+            gamma_val = gamma_params[index]
+            rbf_svm = SVC(kernel = 'rbf', gamma = gamma_val)
+            rbf_svm.fit(X_train, y_train)
+            # SVM RBF testing
+            gamma_total = gamma_total + rbf_svm.score(X_test,y_test)
+
+            # Sigmoid DNN classifier
+            neurons = neurons_params[index]
+            sigmoid_dnn = MLPClassifier(hidden_layer_sizes = neurons, activation = 'logistic', max_iter = 1000)
+            sigmoid_dnn.fit(X_train, y_train)
+            # Sigmoid DNN testing
+            neurons_total = neurons_total + sigmoid_dnn.score(X_test,y_test)
+
     ################################ AVG ACCURACY #################################
         # Average accuracy for k
         avg_k_accuracy = k_total/10
@@ -138,6 +158,14 @@ if __name__ == "__main__":
         # Average accuracy for polynomial kernel degrees
         avg_d_accuracy = d_total/10
         d_params_accuracy[index] = avg_d_accuracy
+
+        # Average accuracy for RBF gamma values
+        avg_gamma_accuracy = gamma_total/10
+        gamma_params_accuracy[index] = avg_gamma_accuracy
+
+        # Average accuracy for sigmoid DNN number of neurons
+        avg_neurons_accuracy = neurons_total/10
+        neurons_params_accuracy[index] = avg_neurons_accuracy
 
         #print("DEPTH = ", depth)
         #r = tree.export_text(dectree, feature_names=['A','B','C','D','E','F','G','H','I'])
@@ -156,6 +184,12 @@ if __name__ == "__main__":
 
     print("\n************* svm poly kernel ***************")
     print(d_params_accuracy)
+
+    print("\n************* svm rbf kernel ***************")
+    print(gamma_params_accuracy)
+
+    print("\n************* dnn sigmoid ***************")
+    print(neurons_params_accuracy)
 
    
     ############################################################################
