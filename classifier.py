@@ -70,11 +70,11 @@ if __name__ == "__main__":
     gamma_params_accuracy = [0,0,0,0,0,0,0,0,0,0]
     
     # Deep neural network with sigmoid activation
-    neurons_params = [5,10,15,20,25,30,35,40,45,50]
+    neurons_params = [10,20,30,40,50,60,70,80,90,100]
     neurons_params_accuracy = [0,0,0,0,0,0,0,0,0,0]
     
     # Deep neural network with ReLU activation
-    relu_neurons_params = [5,10,15,20,25,30,35,40,45,50]
+    relu_neurons_params = [10,20,30,40,50,60,70,80,90,100]
     relu_neurons_params_accuracy = [0,0,0,0,0,0,0,0,0,0]
 
     index = 0
