@@ -3,8 +3,6 @@ import sys
 import time
 import pandas as pd
 import matplotlib.pyplot as plt
-import numpy as np
-import sklearn as sk
 from sklearn.model_selection import StratifiedKFold
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn import tree
@@ -44,6 +42,8 @@ if __name__ == "__main__":
     m_validation = m_data.sample(frac = 0.1)
     training_data = training_data.drop(m_validation.index)
     validation_data = b_validation.append(m_validation)
+    validation_data = validation_data.sample(frac=1)
+
 
     # Divide remaining data into 10-fold subsets
     kfold_class = training_data['J']
@@ -67,7 +67,7 @@ if __name__ == "__main__":
     d_params_accuracy = [0,0,0,0,0,0,0,0,0,0]
     
     # SVM using the RBF kernel
-    gamma_params = [.0000001,.000001,.00001,.0001,.001,.01,.1,1,10,100]
+    gamma_params = [.1,.2,.3,.4,.5,.6,.7,.8,.9,1]
     gamma_params_accuracy = [0,0,0,0,0,0,0,0,0,0]
     
     # Deep neural network with sigmoid activation
@@ -225,6 +225,7 @@ if __name__ == "__main__":
         plt.title('Accuracy of KNN classifier for different k values')
         plt.xlabel('k (number of nearest neighbors)')
         plt.ylabel('Accuracy of classifier')
+        plt.ylim([.8, 1])
         plt.show()
         plt.savefig('knn.png')
         plt.cla()   # Clear axis
@@ -235,6 +236,7 @@ if __name__ == "__main__":
         plt.title('Accuracy of decision tree classifier for different max depth values')
         plt.xlabel('max depth of tree')
         plt.ylabel('Accuracy of classifier')
+        plt.ylim([.8, 1])
         plt.show()
         plt.savefig('dectree.png')
         plt.cla()   # Clear axis
@@ -245,6 +247,7 @@ if __name__ == "__main__":
         plt.title('Accuracy of random forest classifier for different quantities of trees')
         plt.xlabel('number of trees in forest')
         plt.ylabel('Accuracy of classifier')
+        plt.ylim([.8, 1])
         plt.show()
         plt.savefig('randomforest.png')
         plt.cla()   # Clear axis
@@ -255,6 +258,7 @@ if __name__ == "__main__":
         plt.title('Accuracy of SVM polynomial kernel classifier for different d values')
         plt.xlabel('d (degree of polynomial kernel)')
         plt.ylabel('Accuracy of classifier')
+        plt.ylim([.8, 1])
         plt.show()
         plt.savefig('svmpoly.png')
         plt.cla()   # Clear axis
@@ -265,6 +269,7 @@ if __name__ == "__main__":
         plt.title('Accuracy of SVM RBF classifier for different gamma values')
         plt.xlabel('gamma')
         plt.ylabel('Accuracy of classifier')
+        plt.ylim([.8, 1])
         plt.show()
         plt.savefig('svmrbf.png')
         plt.cla()   # Clear axis
@@ -275,6 +280,7 @@ if __name__ == "__main__":
         plt.title('Accuracy of DNN classifier with Sigmoid activation function for different quantities of neurons in hidden layers')
         plt.xlabel('number of neurons in hidden layers')
         plt.ylabel('Accuracy of classifier')
+        plt.ylim([.8, 1])
         plt.show()
         plt.savefig('dnnsigmoid.png')
         plt.cla()   # Clear axis
@@ -285,6 +291,7 @@ if __name__ == "__main__":
         plt.title('Accuracy of DNN classifier with ReLu activation function for different quantities of neurons in hidden layers')
         plt.xlabel('number of neurons in hidden layers')
         plt.ylabel('Accuracy of classifier')
+        plt.ylim([.8, 1])
         plt.show()
         plt.savefig('dnnrelu.png')
         plt.cla()   # Clear axis
