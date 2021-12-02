@@ -48,6 +48,10 @@ if __name__ == "__main__":
     # Divide remaining data into 10-fold subsets
     kfold_class = training_data['J']
 
+    validation_y = validation_data['J']
+    validation_X = validation_data
+    del validation_X['J']
+
     ################################ HYPERPARAMETERS #################################
     # k-nearest neighbors
     k_params = [1,2,3,4,5,6,7,8,9,10]
@@ -94,6 +98,22 @@ if __name__ == "__main__":
         neurons_total = 0
         relu_neurons_total = 0
 
+        knn_max = 0
+        tree_max = 0
+        forest_max = 0
+        poly_max = 0
+        rbf_max = 0
+        sigmoid_max = 0
+        relu_max = 0
+        
+        knn_score = 0
+        tree_score = 0
+        forest_score = 0
+        poly_score = 0
+        rbf_score = 0
+        sigmoid_score = 0
+        relu_score = 0
+
     ################################ TRAINING #################################
         for train_index, test_index in skf.split(training_data, kfold_class):
             #print("\n**************** SUBSET ****************")
@@ -107,13 +127,19 @@ if __name__ == "__main__":
             knn.fit(X_train,y_train)
             #KNN classifier testing
             k_total = k_total + knn.score(X_test, y_test)
+            if knn.score(X_test, y_test) > knn_score:
+                knn_max = k_param
+                knn_score = knn.score(validation_X, validation_y)
 
             # Decision tree classifier with different max depths
             depth = max_depth_params[index]
             dectree = tree.DecisionTreeClassifier(max_depth = depth)
-            dectree = dectree.fit(X_train, y_train)
+            dectree.fit(X_train, y_train)
             # Decision tree testing
             max_depth_total = max_depth_total + dectree.score(X_test, y_test)
+            if dectree.score(X_test, y_test) > tree_score:
+                tree_max = depth
+                tree_score = dectree.score(validation_X, validation_y)
 
             # Random forest classifier with different numbers of trees
             num_trees = trees_params[index]
@@ -121,6 +147,9 @@ if __name__ == "__main__":
             forest.fit(X_train, y_train)
             # Random forest testing
             trees_total = trees_total + forest.score(X_test,y_test)
+            if forest.score(X_test, y_test) > forest_score:
+                forest_max = num_trees
+                forest_score = forest.score(validation_X, validation_y)
 
             # SVM polynomial kernel classifier
             d = d_params[index]
@@ -128,6 +157,9 @@ if __name__ == "__main__":
             poly_svm.fit(X_train, y_train)
             # SVM polynomial kernel testing
             d_total = d_total + poly_svm.score(X_test,y_test)
+            if poly_svm.score(X_test, y_test) > poly_score:
+                poly_max = d
+                poly_score = poly_svm.score(validation_X, validation_y)
 
             # SVM RBF kernel classifier
             gamma_val = gamma_params[index]
@@ -135,6 +167,9 @@ if __name__ == "__main__":
             rbf_svm.fit(X_train, y_train)
             # SVM RBF testing
             gamma_total = gamma_total + rbf_svm.score(X_test,y_test)
+            if rbf_svm.score(X_test, y_test) > rbf_score:
+                rbf_max = gamma_val
+                rbf_score = rbf_svm.score(validation_X, validation_y)
 
             # Sigmoid DNN classifier
             neurons = neurons_params[index]
@@ -144,6 +179,9 @@ if __name__ == "__main__":
             sigmoid_dnn.fit(X_train, y_train)
             # Sigmoid DNN testing
             neurons_total = neurons_total + sigmoid_dnn.score(X_test,y_test)
+            if sigmoid_dnn.score(X_test, y_test) > sigmoid_score:
+                sigmoid_max = neurons
+                sigmoid_score = sigmoid_dnn.score(validation_X, validation_y)
 
             # ReLu DNN classifier
             relu_neurons = relu_neurons_params[index]
@@ -151,6 +189,9 @@ if __name__ == "__main__":
             relu_dnn.fit(X_train, y_train)
             # ReLu DNN testing
             relu_neurons_total = relu_neurons_total + relu_dnn.score(X_test,y_test)
+            if relu_dnn.score(X_test, y_test) > relu_score:
+                relu_max = relu_neurons
+                relu_score = relu_dnn.score(validation_X, validation_y)
 
     ################################ AVG ACCURACY #################################
         # Average accuracy for k
@@ -297,5 +338,11 @@ if __name__ == "__main__":
         plt.cla()   # Clear axis
         plt.clf()   # Clear figure
 
-        
-
+        print("********* VALIDATION SCORES *****************")
+        print(knn_score)
+        print(tree_score)
+        print(forest_score)
+        print(poly_score)
+        print(rbf_score)
+        print(sigmoid_score)
+        print(relu_dnn)
